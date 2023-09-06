@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MDP</string>
+    <string name="title_home">Home</string>
+    <string name="title_bluetooth">Bluetooth Connection</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="create_grid">Create Grid</string> <!--retrieve using getString(R.string.create_grid)-->
+    <string name="scan_device">Scan</string>
+    <string name="on_bluetooth">On</string>
+</resources>
