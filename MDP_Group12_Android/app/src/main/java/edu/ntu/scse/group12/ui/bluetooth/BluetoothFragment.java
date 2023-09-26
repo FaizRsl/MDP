@@ -44,14 +44,14 @@ public class BluetoothFragment extends Fragment {
     private final int LOCATION_PERMISSION_REQUEST = 101;
     private static final int REQUEST_ENABLE_BT = 1;
 
-    private static final int REQUEST_PERMISSION_BLUETOOTH = 2;
+/*    private static final int REQUEST_PERMISSION_BLUETOOTH = 3;
 
-    private static final int REQUEST_PERMISSION_BLUETOOTH_ADMIN = 3;
-    private static final int REQUEST_PERMISSION_LOCATION = 4;
+    private static final int REQUEST_PERMISSION_BLUETOOTH_ADMIN = 4;*/
+    private static final int REQUEST_PERMISSION_LOCATION = 2;
 
-    private static final int REQUEST_PERMISSION_SCAN = 5;
+/*    private static final int REQUEST_PERMISSION_SCAN = 5;
 
-    private static final int REQUEST_PERMISSION_CONNECT = 6;
+    private static final int REQUEST_PERMISSION_CONNECT = 6;*/
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothClient bluetoothClient;
@@ -91,25 +91,25 @@ public class BluetoothFragment extends Fragment {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        if (!BTUtils.checkBluetoothPermission(getContext())) {
+        /*if (!BTUtils.checkBluetoothPermission(getContext())) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH}, REQUEST_PERMISSION_BLUETOOTH);
-        }
+        }*/
 
-        if (!BTUtils.checkBluetoothAdminPermission(getContext())) {
+        /*if (!BTUtils.checkBluetoothAdminPermission(getContext())) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_PERMISSION_BLUETOOTH_ADMIN);
-        }
+        }*/
 
         if (!BTUtils.checkLocationPermission(getContext())) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_LOCATION);
         }
 
-        if (!BTUtils.checkBluetoothScanPermission(getContext())) {
+        /*if (!BTUtils.checkBluetoothScanPermission(getContext())) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_PERMISSION_SCAN);
-        }
+        }*/
 
-        if (!BTUtils.checkBluetoothConnectionPermission(getContext())) {
+        /*if (!BTUtils.checkBluetoothConnectionPermission(getContext())) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_PERMISSION_CONNECT);
-        }
+        }*/
 
         //On Bluetooth
         Button onBluetooth = root.findViewById(R.id.onBlueooth);
@@ -143,7 +143,7 @@ public class BluetoothFragment extends Fragment {
                 if (BTUtils.checkBluetoothPermission(getContext())){
                     Log.d("Bluetooth", "bluetooth enable");
                 }
-                if (BTUtils.checkBluetoothAdminPermission(getContext())){
+                /*if (BTUtils.checkBluetoothAdminPermission(getContext())){
                     Log.d("Bluetooth", "bluetooth admin enable");
                 }
                 if (BTUtils.checkBluetoothConnectionPermission(getContext())){
@@ -154,7 +154,7 @@ public class BluetoothFragment extends Fragment {
                 }
                 if (BTUtils.checkBluetoothScanPermission(getContext())){
                     Log.d("Bluetooth", "bluetooth scan enable");
-                }
+                }*/
 
                 // Check if we have the location permission before starting discovery
                 if (BTUtils.checkLocationPermission(getContext())) {
