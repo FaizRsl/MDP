@@ -5,8 +5,8 @@ from model import *
 
 app = Flask(__name__)
 CORS(app)
-#model = load_model()
-model = None
+model = load_model()
+#model = None
 @app.route('/status', methods=['GET'])
 def status():
     """
