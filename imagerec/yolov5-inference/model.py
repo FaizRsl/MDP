@@ -31,7 +31,7 @@ def load_model():
     Load the model from the local directory
     """
     #model = torch.hub.load('./', 'custom', path='YOLOv5_new.pt', source='local')
-    model = torch.hub.load('./', 'custom', path='Week_9.pt', source='local')
+    model = torch.hub.load('./', 'custom', path='Week_8.pt', source='local')
     return model
 
 def draw_own_bbox(img,x1,y1,x2,y2,label,color=(36,255,12),text_color=(0,0,0)):

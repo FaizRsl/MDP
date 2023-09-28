@@ -29,12 +29,12 @@ def image_predict():
     obstacle_id = constituents[1]
 
     ## Week 8 ## 
-    #signal = constituents[2].strip(".jpg")
-    #image_id = predict_image(filename, model, signal)
+    signal = constituents[2].strip(".jpg")
+    image_id = predict_image(filename, model, signal)
 
     ## Week 9 ## 
     # We don't need to pass in the signal anymore
-    image_id = predict_image_week_9(filename,model)
+    #image_id = predict_image_week_9(filename,model)
 
     # Return the obstacle_id and image_id
     result = {
