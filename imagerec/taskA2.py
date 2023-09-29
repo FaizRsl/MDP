@@ -330,5 +330,7 @@ def predict_image_week_9(image, model):
 if __name__ == '__main__':
     model = load_model()
     # set path to folder with images
-    folder_path = '[Enter Image Path]'
-
+    test_image = "Enter file path"
+    
+    #Task A2
+    predict_image(test_image, model)
