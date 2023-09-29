@@ -120,7 +120,7 @@ def draw_own_bbox(img,x1,y1,x2,y2,label,color=(36,255,12),text_color=(0,0,0)):
     # Print the text  
     img = cv2.rectangle(img, (x1, y1 - 20), (x1 + w, y1), color, -1)
     img = cv2.putText(img, label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 1)
-    
+
     # Save the annotated image
     cv2.imwrite(f"own_results/annotated_image_{label}_{rand}.jpg", img)
    
@@ -281,114 +281,51 @@ def predict_image(image, model):
 #     print(f"Final result: NA")
 #     return 'NA'
 
-# def predict_image_week_9(image, model):
-#     # Load the image
-#     img = Image.open(os.path.join('uploads', image))
-#     # Run inference
-#     results = model(img)
-#     # Save the results
-#     results.save('runs')
-#     # Convert the results to a dataframe
-#     df_results = results.pandas().xyxy[0]
-#     # Calculate the height and width of the bounding box and the area of the bounding box
-#     df_results['bboxHt'] = df_results['ymax'] - df_results['ymin']
-#     df_results['bboxWt'] = df_results['xmax'] - df_results['xmin']
-#     df_results['bboxArea'] = df_results['bboxHt'] * df_results['bboxWt']
+def predict_image_week_9(image, model):
+    # Load the image
+    img = Image.open(os.path.join('uploads', image))
+    # Run inference
+    results = model(img)
+    # Save the results
+    results.save('runs')
+    # Convert the results to a dataframe
+    df_results = results.pandas().xyxy[0]
+    # Calculate the height and width of the bounding box and the area of the bounding box
+    df_results['bboxHt'] = df_results['ymax'] - df_results['ymin']
+    df_results['bboxWt'] = df_results['xmax'] - df_results['xmin']
+    df_results['bboxArea'] = df_results['bboxHt'] * df_results['bboxWt']
 
-#     # Label with largest bbox height will be last
-#     df_results = df_results.sort_values('bboxArea', ascending=False)
-#     pred_list = df_results 
-#     pred = 'NA'
-#     # If prediction list is not empty
-#     if pred_list.size != 0:
-#         # Go through the predictions, and choose the first one with confidence > 0.5
-#         for _, row in pred_list.iterrows():
-#             if row['name'] != 'Bullseye' and row['confidence'] > 0.5:
-#                 pred = row    
-#                 break
+    # Label with largest bbox height will be last
+    df_results = df_results.sort_values('bboxArea', ascending=False)
+    pred_list = df_results 
+    pred = 'NA'
+    # If prediction list is not empty
+    if pred_list.size != 0:
+        # Go through the predictions, and choose the first one with confidence > 0.5
+        for _, row in pred_list.iterrows():
+            if row['name'] != 'Bullseye' and row['confidence'] > 0.5:
+                pred = row    
+                break
 
-#         # Draw the bounding box on the image 
-#         if not isinstance(pred,str):
-#             draw_own_bbox(np.array(img), pred['xmin'], pred['ymin'], pred['xmax'], pred['ymax'], pred['name'])
+        # Draw the bounding box on the image 
+        if not isinstance(pred,str):
+            draw_own_bbox(np.array(img), pred['xmin'], pred['ymin'], pred['xmax'], pred['ymax'], pred['name'])
         
-#     # Dictionary is shorter as only two symbols, left and right are needed
-#     name_to_id = {
-#         "NA": 'NA',
-#         "Bullseye": 10,
-#         "Right": 38,
-#         "Left": 39,
-#         "Right Arrow": 38,
-#         "Left Arrow": 39,
-#     }
-#     # Return the image id
-#     if not isinstance(pred,str):
-#         image_id = str(name_to_id[pred['name']])
-#     else:
-#         image_id = 'NA'
-#     return image_id
-
-
-def stitch_image():
-    """
-    Stitches the images in the folder together and saves it into runs/stitched folder
-    """
-    # Initialize path to save stitched image
-    imgFolder = 'runs'
-    stitchedPath = os.path.join(imgFolder, f'stitched-{int(time.time())}.jpeg')
-
-    # Find all files that ends with ".jpg" (this won't match the stitched images as we name them ".jpeg")
-    imgPaths = glob.glob(os.path.join(imgFolder+"/detect/*/", "*.jpg"))
-    # Open all images
-    images = [Image.open(x) for x in imgPaths]
-    # Get the width and height of each image
-    width, height = zip(*(i.size for i in images))
-    # Calculate the total width and max height of the stitched image, as we are stitching horizontally
-    total_width = sum(width)
-    max_height = max(height)
-    stitchedImg = Image.new('RGB', (total_width, max_height))
-    x_offset = 0
-
-    # Stitch the images together
-    for im in images:
-        stitchedImg.paste(im, (x_offset, 0))
-        x_offset += im.size[0]
-    # Save the stitched image to the path
-    stitchedImg.save(stitchedPath)
-
-    # Move original images to "originals" subdirectory
-    for img in imgPaths:
-        shutil.move(img, os.path.join(
-            "runs", "originals", os.path.basename(img)))
-
-    return stitchedImg
-
-def stitch_image_own():
-    """
-    Stitches the images in the folder together and saves it into own_results folder
-
-    Basically similar to stitch_image() but with different folder names and slightly different drawing of bounding boxes and text
-    """
-    imgFolder = 'own_results'
-    stitchedPath = os.path.join(imgFolder, f'stitched-{int(time.time())}.jpeg')
-
-    imgPaths = glob.glob(os.path.join(imgFolder+"/annotated_image_*.jpg"))
-    imgTimestamps = [imgPath.split("_")[-1][:-4] for imgPath in imgPaths]
-    
-    sortedByTimeStampImages = sorted(zip(imgPaths, imgTimestamps), key=lambda x: x[1])
-
-    images = [Image.open(x[0]) for x in sortedByTimeStampImages]
-    width, height = zip(*(i.size for i in images))
-    total_width = sum(width)
-    max_height = max(height)
-    stitchedImg = Image.new('RGB', (total_width, max_height))
-    x_offset = 0
-
-    for im in images:
-        stitchedImg.paste(im, (x_offset, 0))
-        x_offset += im.size[0]
-    stitchedImg.save(stitchedPath)
-
-    return stitchedImg
+    # Dictionary is shorter as only two symbols, left and right are needed
+    # name_to_id = {
+    #     "NA": 'NA',
+    #     "Bullseye": 10,
+    #     "Right": 38,
+    #     "Left": 39,
+    #     "Right Arrow": 38,
+    #     "Left Arrow": 39,
+    # }
+    # # Return the image id
+    # if not isinstance(pred,str):
+    #     image_id = str(name_to_id[pred['name']])
+    # else:
+    #     image_id = 'NA'
+    # return image_id
 
 if __name__ == '__main__':
     model = load_model()
