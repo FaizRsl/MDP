@@ -1,8 +1,12 @@
-import socket# Define the Raspberry Pi's IP address and port
-server_ip = '192.168.12.12'  # Replace with your Raspberry Pi's IP addressserver_port = 8888  # Use the same port as in the Raspberry Pi script
+import socket
+
+# Define the Raspberry Pi's IP address and port
+server_ip = '192.168.12.12'  # Replace with your Raspberry Pi's IP address
+server_port = 8888  # Use the same port as in the Raspberry Pi script
 # Create a socket object
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Connect to the serverclient_socket.connect((server_ip, server_port))
+# Connect to the server
+client_socket.connect((server_ip, server_port))
 # Specify where you want to save the received image
 received_image_path = 'received_image.jpeg'
 # Receive image data from the Raspberry Pi and save it to a file
