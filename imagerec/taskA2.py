@@ -123,8 +123,10 @@ def draw_own_bbox(img,x1,y1,x2,y2,label,color=(36,255,12),text_color=(0,0,0)):
     # Save the annotated image
     cv2.imwrite(f"own_results/annotated_image_{label}_{rand}.jpg", img)
 
+    ##Display the image
 
-def predict_image(image, model, signal):
+
+def predict_image(image, model):
     """
     Predict the image using the model and save the results in the 'runs' folder
     
@@ -191,34 +193,34 @@ def predict_image(image, model, signal):
                 pred = pred_shortlist[0]
 
             # If multiple predictions remain after filtering by confidence and area
-            else:
-                # Use signal of {signal} to filter further 
+            # else:
+            #     # Use signal of {signal} to filter further 
                 
-                # Sort the predictions by xmin
-                pred_shortlist.sort(key=lambda x: x['xmin'])
+            #     # Sort the predictions by xmin
+            #     pred_shortlist.sort(key=lambda x: x['xmin'])
 
-                # If signal is 'L', choose the first prediction in the list, i.e. leftmost in the image
-                if signal == 'L':
-                    pred = pred_shortlist[0]
+            #     # If signal is 'L', choose the first prediction in the list, i.e. leftmost in the image
+            #     if signal == 'L':
+            #         pred = pred_shortlist[0]
                 
-                # If signal is 'R', choose the last prediction in the list, i.e. rightmost in the image
-                elif signal == 'R':
-                    pred = pred_shortlist[-1]
+            #     # If signal is 'R', choose the last prediction in the list, i.e. rightmost in the image
+            #     elif signal == 'R':
+            #         pred = pred_shortlist[-1]
                 
-                # If signal is 'C', choose the prediction that is central in the image
-                else:
-                    # Loop through the predictions shortlist
-                    for i in range(len(pred_shortlist)):
-                        # If the xmin of the prediction is between 250 and 774, i.e. the center of the image, choose that prediction
-                        if pred_shortlist[i]['xmin'] > 250 and pred_shortlist[i]['xmin'] < 774:
-                            pred = pred_shortlist[i]
-                            break
+            #     # If signal is 'C', choose the prediction that is central in the image
+            #     else:
+            #         # Loop through the predictions shortlist
+            #         for i in range(len(pred_shortlist)):
+            #             # If the xmin of the prediction is between 250 and 774, i.e. the center of the image, choose that prediction
+            #             if pred_shortlist[i]['xmin'] > 250 and pred_shortlist[i]['xmin'] < 774:
+            #                 pred = pred_shortlist[i]
+            #                 break
                     
-                    # If no prediction is central, choose the one with the largest area
-                    if isinstance(pred,str):
-                        # Choosing one with largest area if none are central
-                        pred_shortlist.sort(key=lambda x: x['bboxArea']) 
-                        pred = pred_shortlist[-1]
+            #         # If no prediction is central, choose the one with the largest area
+            #         if isinstance(pred,str):
+            #             # Choosing one with largest area if none are central
+            #             pred_shortlist.sort(key=lambda x: x['bboxArea']) 
+            #             pred = pred_shortlist[-1]
         
         # Draw the bounding box on the image
         if not isinstance(pred,str):
@@ -382,4 +384,9 @@ def stitch_image_own():
     stitchedImg.save(stitchedPath)
 
     return stitchedImg
+
+if __name__ == '__main__':
+    model = load_model()
+    # set path to folder with images
+    folder_path = '[Enter Image Path]'
 
