@@ -1091,7 +1091,81 @@ public class HomeFragment extends Fragment {
         }
         return jsonObject.toString();
     }
+
     public void updateReceivedData(String data){
+        try {
+            String[] splitString = null;
+            String[] splitStringPipe = null;
+            String[] splitStringPipeData = null;
+
+            if (data.startsWith("ROBOT")) {
+                splitString = data.split(",");
+                for (String receivedData : splitString) {
+                    Log.d(TAG, "splitString: " + receivedData.trim());
+                }
+                if (splitString != null) {
+                    int direction = Integer.parseInt(splitString[3].trim());
+                    int xCoor = Integer.parseInt(splitString[1].trim());
+                    int yCoor = Integer.parseInt(splitString[2].trim());
+                    int snapStatus = Integer.parseInt(splitString[4].trim());
+                    Log.d(TAG, "direction: " + direction);
+                    Log.d(TAG, "xCoor: " + xCoor);
+                    Log.d(TAG, "yCoor: " + yCoor);
+                    //Log.d(TAG,"snapStatus: " +snapStatus);
+                    if (snapStatus != -1) {
+                        statusTextArea.setText("Snapping");
+                    } else {
+                        statusTextArea.setText("Moving");
+                    }
+                    if (xCoor != 0 && yCoor != 0 && direction != 0) {
+                        placeRobot(xCoor, yCoor, direction);
+                    }
+                    receivedDataTextArea.setText(xCoor + "," + yCoor + "," + direction);
+                }
+            }
+            else if (data.startsWith("TARGET")) {
+                splitString = data.split(",");
+                for (String receivedData : splitString) {
+                    Log.d(TAG, "splitString: " + receivedData.trim());
+                }
+                List<Integer> obstacleIDArr = new ArrayList<>();
+                List<Integer> imgIDArr = new ArrayList<>();
+                if (splitString != null) {
+                    for (int i = 1; i < splitString.length; i++) {
+                        if (i % 2 == 1) {
+                            //even -> obs id
+                            obstacleIDArr.add(Integer.parseInt(splitString[i]));
+                        } else {
+                            //odd -> obs img id
+                            imgIDArr.add(Integer.parseInt(splitString[i]));
+                        }
+                    }
+
+
+                        //loop obs
+                    for (int i = 0; i < obstacleIDArr.size(); i++) {
+                        for (Obstacle obstacle : obstacles) {
+                            if (obstacle.getId() == obstacleIDArr.get(i)) {
+                                obstacle.setImageId(imgIDArr.get(i));
+
+                                FrameLayout frameLayout = frameLayouts[obstacle.getRow()][obstacle.getCol()];
+                                imageViews[obstacle.getRow()][obstacle.getCol()].setImageResource(getDrawableForDirection("obstacle", obstacle.getDirection()));
+                                Log.i(TAG, "Obstacle Obj: " + obstacle.toString());
+                                TextView textView = (TextView) frameLayout.getChildAt(1);  // get the TextView
+                                textView.setText(String.valueOf(obstacle.getImageId()));
+                                textView.setTextColor(Color.GREEN);
+                                textView.setVisibility(View.VISIBLE);  // make it visible
+                            }
+                        }
+                    }
+                }
+            }
+        }catch(ArrayIndexOutOfBoundsException e){
+            //Toast.makeText(getContext(), "Unable to update received data...", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "updateReceivedData:" + e);
+        }
+    }
+    /*public void updateReceivedData(String data){
         try {
             String[] splitString = null;
             String[] splitStringPipe = null;
@@ -1163,5 +1237,5 @@ public class HomeFragment extends Fragment {
             //Toast.makeText(getContext(), "Unable to update received data...", Toast.LENGTH_SHORT).show();
             Log.d(TAG,"updateReceivedData:" +e);
         }
-    }
+    }*/
 }
