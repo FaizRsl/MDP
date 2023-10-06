@@ -30,13 +30,17 @@ def image_predict():
 
     ## Week 8 ## 
     signal = constituents[2].strip(".jpg")
+    print("Starting image prediction...")
     image_id = predict_image(filename, model, signal)
+    print("Image prediction completed!")
 
     ## Week 9 ## 
     # We don't need to pass in the signal anymore
     #image_id = predict_image_week_9(filename,model)
 
     # Return the obstacle_id and image_id
+    print("Sending JSON data...")
+
     result = {
         "obstacle_id": obstacle_id,
         "image_id": image_id
