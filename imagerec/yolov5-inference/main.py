@@ -2,6 +2,8 @@ import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model import *
+import socket
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -59,4 +61,8 @@ def stitch():
     return jsonify({"result": "ok"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print("Connecting to RPI")
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('192.168.12.12', 12345))
+    print("Connection to RPI completed")
+    app.run(host='192.168.12.12', port=5000, debug=True)
