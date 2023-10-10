@@ -11,6 +11,8 @@ from communication.stm32 import STMLink
 from consts import SYMBOL_MAP
 from logger import prepare_logger
 from settings import API_IP, API_PORT
+from picamera import PiCamera
+from time import sleep
 
 
 class PiAction:
@@ -367,23 +369,27 @@ class RaspberryPi:
         url = f"http://{API_IP}:{API_PORT}/image"
         filename = f"{int(time.time())}_{obstacle_id}_{signal}.jpg"
 
-        retry_count = 0
-        extn = ".jpg"
-        rpistr = "libcamera-jpeg -e " + extn + " -n -t 500 -o " + filename
+        # retry_count = 0
+        # extn = ".jpg"
+        # rpistr = "libcamera-jpeg -e " + extn + " -n -t 500 -o " + filename
+        camera = PiCamera()
 
         while retry_count < 6:
 
             retry_count += 1
 
             #Capturing image using PiCamera
-            os.system(rpistr)
+            # os.system(rpistr)
+            camera.capture(filename)
 
             #Log the number of times image has been captured
             self.logger.info(f"Current image capture trial: {retry_count}")
 
             self.logger.debug("Requesting from image API")
-            response = requests.post(
-                url, files={"file": (filename, open(filename, 'rb'))})
+            
+            files={"file": open(filename, 'rb')}
+            response = requests.post(url, files=files)
+            print("requests.post() runs")
 
             if response.status_code != 200:
                 self.logger.error(

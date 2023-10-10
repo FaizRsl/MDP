@@ -1,6 +1,7 @@
 import requests
 
-url = "http://127.0.0.1:5000/image"
+#url = "http://127.0.0.1:5000/image"
+url = "http://192.168.12.23:5000/image"
 file_path = "1665419523_2_C.jpg"
 
 with open(file_path, "rb") as file:
