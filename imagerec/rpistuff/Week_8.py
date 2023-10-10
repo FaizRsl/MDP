@@ -11,7 +11,6 @@ from communication.stm32 import STMLink
 from consts import SYMBOL_MAP
 from logger import prepare_logger
 from settings import API_IP, API_PORT
-from picamera import PiCamera
 
 
 class PiAction:
@@ -417,8 +416,9 @@ class RaspberryPi:
             # if (shutter * 1000000) - int(shutter * 1000000) > 0.5:
             #     sspeed += 1
 
-            rpistr = "libcamera-still -e " + \
-                + " -n -t 500 -o " + filename
+            extn = ".jpg"
+            rpistr = "libcamera-jpeg -e " + \
+                extn + " -n -t 500 -o " + filename
             
             # rpistr += " --brightness " + \
             #     str(brightness/100) + " --contrast " + str(contrast/100)
