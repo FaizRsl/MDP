@@ -369,10 +369,10 @@ class RaspberryPi:
         url = f"http://{API_IP}:{API_PORT}/image"
         filename = f"{int(time.time())}_{obstacle_id}_{signal}.jpg"
 
-        # retry_count = 0
+        camera = PiCamera()
+        retry_count = 0
         # extn = ".jpg"
         # rpistr = "libcamera-jpeg -e " + extn + " -n -t 500 -o " + filename
-        camera = PiCamera()
 
         while retry_count < 6:
 
@@ -380,7 +380,10 @@ class RaspberryPi:
 
             #Capturing image using PiCamera
             # os.system(rpistr)
+            camera.start_preview()
+            sleep(2)
             camera.capture(filename)
+            camera.stop_preview()
 
             #Log the number of times image has been captured
             self.logger.info(f"Current image capture trial: {retry_count}")
