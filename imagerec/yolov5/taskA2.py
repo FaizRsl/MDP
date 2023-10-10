@@ -148,7 +148,8 @@ def predict_image(image, model):
     str - predicted label
     """
     # Load the image
-    img = Image.open(os.path.join('uploads', image))
+    #img = Image.open(os.path.join('uploads', image))
+    img = Image.open(image)
 
     # Predict the image using the model
     results = model(img)
@@ -330,7 +331,7 @@ def predict_image_week_9(image, model):
 if __name__ == '__main__':
     model = load_model()
     # set path to folder with images
-    test_image = "received_image.jpeg"
+    test_image = "1665419523_2_C.jpg"
     
     #Task A2
     predict_image(test_image, model)
