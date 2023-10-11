@@ -384,6 +384,7 @@ class RaspberryPi:
             sleep(2)
             camera.capture(filename)
             camera.stop_preview()
+            camera.close()
 
             #Log the number of times image has been captured
             self.logger.info(f"Current image capture trial: {retry_count}")
