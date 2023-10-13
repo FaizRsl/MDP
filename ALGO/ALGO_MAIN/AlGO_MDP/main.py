@@ -15,6 +15,8 @@ def status():
     This is a health check endpoint to check if the server is running
     :return: a json object with a key "result" and value "ok"
     """
+    print("::::Got the obstacles from RPI::::\n")
+    
     return jsonify({"result": "ok"})
 
 
@@ -26,6 +28,8 @@ def path_finding():
     """
     # Get the json data from the request
     content = request.json
+
+    print(f"content is:: {content}\n")
 
     # Get the obstacles, big_turn, retrying, robot_x, robot_y, and robot_direction from the json data
     obstacles = content['obstacles']
@@ -44,7 +48,8 @@ def path_finding():
     start = time.time()
     # Get shortest path
     optimal_path, distance = maze_solver.get_optimal_order_dp(retrying=retrying)
-    print(f"Time taken to find shortest path using A* search: {time.time() - start}s")
+    end=time.time()
+    print(f"Time taken to find shortest path using A* search: {end - start}s")
     print(f"Distance to travel: {distance} units")
     
     # Based on the shortest path, generate commands for the robot
@@ -66,6 +71,13 @@ def path_finding():
         else:
             i += 1
         path_results.append(optimal_path[i].get_dict())
+
+    
+    print(f"\ndistance is: {distance}\n")
+    print(f"\npath results are: {path_results}\n")
+    print(f"\ncommands are: {commands}\n")
+
+
     return jsonify({
         "data": {
             'distance': distance,
@@ -76,44 +88,45 @@ def path_finding():
     })
 
 
-@app.route('/image', methods=['POST'])
-def image_predict():
-    """
-    This is the main endpoint for the image prediction algorithm
-    :return: a json object with a key "result" and value a dictionary with keys "obstacle_id" and "image_id"
-    """
-    file = request.files['file']
-    filename = file.filename
-    file.save(os.path.join('uploads', filename))
-    # filename format: "<timestamp>_<obstacle_id>_<signal>.jpeg"
-    constituents = file.filename.split("_")
-    obstacle_id = constituents[1]
 
-    ## Week 8 ## 
-    #signal = constituents[2].strip(".jpg")
-    #image_id = predict_image(filename, model, signal)
+# @app.route('/image', methods=['POST'])
+# def image_predict():
+#     """
+#     This is the main endpoint for the image prediction algorithm
+#     :return: a json object with a key "result" and value a dictionary with keys "obstacle_id" and "image_id"
+#     """
+#     file = request.files['file']
+#     filename = file.filename
+#     file.save(os.path.join('uploads', filename))
+#     # filename format: "<timestamp>_<obstacle_id>_<signal>.jpeg"
+#     constituents = file.filename.split("_")
+#     obstacle_id = constituents[1]
 
-    ## Week 9 ## 
-    # We don't need to pass in the signal anymore
-    image_id = predict_image_week_9(filename,model)
+#     ## Week 8 ## 
+#     #signal = constituents[2].strip(".jpg")
+#     #image_id = predict_image(filename, model, signal)
 
-    # Return the obstacle_id and image_id
-    result = {
-        "obstacle_id": obstacle_id,
-        "image_id": image_id
-    }
-    return jsonify(result)
+#     ## Week 9 ## 
+#     # We don't need to pass in the signal anymore
+#     image_id = predict_image_week_9(filename,model)
 
-@app.route('/stitch', methods=['GET'])
-def stitch():
-    """
-    This is the main endpoint for the stitching command. Stitches the images using two different functions, in effect creating two stitches, just for redundancy purposes
-    """
-    img = stitch_image()
-    img.show()
-    img2 = stitch_image_own()
-    img2.show()
-    return jsonify({"result": "ok"})
+#     # Return the obstacle_id and image_id
+#     result = {
+#         "obstacle_id": obstacle_id,
+#         "image_id": image_id
+#     }
+#     return jsonify(result)
+
+# @app.route('/stitch', methods=['GET'])
+# def stitch():
+#     """
+#     This is the main endpoint for the stitching command. Stitches the images using two different functions, in effect creating two stitches, just for redundancy purposes
+#     """
+#     img = stitch_image()
+#     img.show()
+#     img2 = stitch_image_own()
+#     img2.show()
+#     return jsonify({"result": "ok"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
