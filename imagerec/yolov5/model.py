@@ -79,8 +79,8 @@ def draw_bbox(img, image_name, x1, y1, x2, y2, image_id, color=(255,255,255), te
 def rec_image(image, model, signal):
     
     # load image
-    #img = Image.open(os.path.join('uploads', image))
-    results = model.predict(image)
+    img = Image.open(os.path.join('uploads', image))
+    results = model.predict(img)
     result = results[0]
 
     rec_result = []
