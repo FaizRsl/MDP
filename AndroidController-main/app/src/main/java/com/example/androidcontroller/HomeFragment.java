@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    sendDirectionCmdIntent("FW--");
+                    sendDirectionCmdIntent("OB01");
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     sendDirectionCmdIntent("STOP");
@@ -231,7 +231,7 @@ public class HomeFragment extends Fragment{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    sendDirectionCmdIntent("TL--");
+                    sendDirectionCmdIntent("PL01");
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     sendDirectionCmdIntent("STOP");
@@ -246,7 +246,7 @@ public class HomeFragment extends Fragment{
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    sendDirectionCmdIntent("TR--");
+                    sendDirectionCmdIntent("PR01");
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     sendDirectionCmdIntent("STOP");
@@ -301,15 +301,15 @@ public class HomeFragment extends Fragment{
 
             if(isBigTurn){
                 if(isOutdoor){
-                    sendTurningModeCmdIntent("WN04");
+                    sendTurningModeCmdIntent("100");
                 }else{
-                    sendTurningModeCmdIntent("WN02");
+                    sendTurningModeCmdIntent("100");
                 }
             }else{
                 if(isOutdoor){
-                    sendTurningModeCmdIntent("WN03");
+                    sendTurningModeCmdIntent("50");
                 }else{
-                    sendTurningModeCmdIntent("WN01");
+                    sendTurningModeCmdIntent("50");
                 }
             }
         });
