@@ -10,10 +10,10 @@ def load_model():
     # model = torch.hub.load('./', 'custom', path='../weights/Week8_senior.pt', source='local')
     
     # week 8
-    model = YOLO('weights/week8_final.pt')
+    #model = YOLO('weights/week8_final.pt')
     
     #week 9
-    # model = YOLO('../image-recognition/weights/week9_2.04.pt')
+    model = YOLO('weights/week9_2.04.pt')
     
     return model
 
@@ -115,10 +115,10 @@ def rec_image(image, model, signal):
     rec_result.sort(key=lambda x: x['bbox_area'], reverse=True)
     filtered_rec_result = [re for re in rec_result if re["image_id"] != '99']
 
-    # if len(filtered_rec_result) == 0:
-    #     return {
-    #         'image_id': 'NA'
-    #     }
+    if len(filtered_rec_result) == 0:
+        return {
+            'image_id': 'NA'
+        }
 
     final_rec = {}
 
@@ -176,8 +176,8 @@ def rec_image_week9(image, model, signal):
     print("-----Recognize results-----")
     for box in result.boxes:
         image_id = result.names[box.cls[0].item()][2:]
-        # bbox = box.xyxy[0].tolist()
-        # bbox_area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+        bbox = box.xyxy[0].tolist()
+        bbox_area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
         confidence = round(box.conf[0].item(), 3)
 
         print("Image ID:", image_id)
@@ -187,8 +187,8 @@ def rec_image_week9(image, model, signal):
         
         rec_result.append({
             "image_id": image_id,
-            # "bbox": bbox,
-            # "bbox_area": bbox_area,
+            "bbox": bbox,
+            "bbox_area": bbox_area,
             "prob": confidence
         })
 
@@ -197,7 +197,21 @@ def rec_image_week9(image, model, signal):
     filtered_rec_result = [re for re in rec_result if re["image_id"] != '99']
     # by right there should be only one result after filtering out bulleyes
 
-    return filtered_rec_result[0]
+    #Return Bullseye output if if there is no other detected image
+    if len(filtered_rec_result) == 0:
+        final_rec = rec_result[0]
+        final_bbox = final_rec['bbox']
+        final_id = final_rec['image_id']
+        draw_bbox(np.array(img),image, final_bbox[0], final_bbox[1], final_bbox[2], final_bbox[3], final_id)
+        return final_rec
+        # return rec_result[0]
+    
+    else:
+        final_rec = filtered_rec_result[0]
+        final_bbox = final_rec['bbox']
+        final_id = final_rec['image_id']
+        draw_bbox(np.array(img),image, final_bbox[0], final_bbox[1], final_bbox[2], final_bbox[3], final_id)
+        return final_rec
 
 def combine_image():
 
@@ -253,12 +267,12 @@ def combine_image():
 #         print("Image path:", os.path.abspath(image_path))
 #         rec_image(image_path, model, signal)
 
-if __name__ == '__main__':
-    model = load_model()
-    # set path to folder with images
-    test_image = "1697041282_4_C.jpg"
-    constituents = test_image.split("_")
-    obstacle_id = constituents[1]
-    signal = constituents[2].strip(".jpg")
-    rec_image(test_image, model, signal)
+# if __name__ == '__main__':
+#     model = load_model()
+#     # set path to folder with images
+#     test_image = "1697041282_4_C.jpg"
+#     constituents = test_image.split("_")
+#     obstacle_id = constituents[1]
+#     signal = constituents[2].strip(".jpg")
+#     rec_image(test_image, model, signal)
     # combine_image()

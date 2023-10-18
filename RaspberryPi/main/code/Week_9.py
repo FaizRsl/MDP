@@ -289,7 +289,7 @@ class RaspberryPi:
 
     def command_follower(self) -> None:
         while True:
-            command: str = self.command_queue.get()
+            command: str = self.command_queue.get() #Will keep waiting for commands even when queue is empty
             self.unpause.wait()
             self.movement_lock.acquire()
             stm32_prefixes = ("STOP", "ZZ", "UL", "UR", "PL", "PR", "RS", "OB")
