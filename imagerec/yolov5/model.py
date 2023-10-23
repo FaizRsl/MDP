@@ -204,7 +204,6 @@ def rec_image_week9(image, model, signal):
         final_id = final_rec['image_id']
         draw_bbox(np.array(img),image, final_bbox[0], final_bbox[1], final_bbox[2], final_bbox[3], final_id)
         return final_rec
-        # return rec_result[0]
     
     else:
         final_rec = filtered_rec_result[0]
