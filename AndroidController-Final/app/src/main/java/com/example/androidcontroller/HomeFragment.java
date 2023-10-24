@@ -46,9 +46,9 @@ public class HomeFragment extends Fragment{
     private boolean initializedIntentListeners = false;
     private TextView txtRoboStatus;
 
-    private Switch manualModeSwitch;
-    private Switch outdoorArenaSwitch;
-    private Switch turningModeSwitch;
+    //private Switch manualModeSwitch;
+    //private Switch outdoorArenaSwitch;
+    //private Switch turningModeSwitch;
 
     private View rootview;
 
@@ -163,11 +163,11 @@ public class HomeFragment extends Fragment{
         obstacleListView.setAdapter(obstaclesListViewAdapter);
 
         //Switches
-        manualModeSwitch = (Switch) rootview.findViewById(R.id.switch_manualMode);
+        /*manualModeSwitch = (Switch) rootview.findViewById(R.id.switch_manualMode);
         outdoorArenaSwitch = (Switch) rootview.findViewById(R.id.switch_outdoor);
-        turningModeSwitch = (Switch) rootview.findViewById(R.id.switch_turnmode);
+        turningModeSwitch = (Switch) rootview.findViewById(R.id.switch_turnmode);*/
 
-        manualModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*manualModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment{
                 gridMap.setIsOutdoorArena(isChecked);
             }
         });
-
+*/
         //Initialize Flags
         placingRobot = false;
 
@@ -294,9 +294,10 @@ public class HomeFragment extends Fragment{
 
         btnSendStartFastestCar.setOnClickListener(v->{
             txtTimeTaken.setVisibility(View.INVISIBLE);
+            sendControlCmdIntent("start");
             timeStarted = System.nanoTime();
 
-            boolean isBigTurn = turningModeSwitch.isChecked();
+            /*boolean isBigTurn = turningModeSwitch.isChecked();
             boolean isOutdoor = outdoorArenaSwitch.isChecked();
 
             if(isBigTurn){
@@ -311,7 +312,7 @@ public class HomeFragment extends Fragment{
                 }else{
                     sendTurningModeCmdIntent("50");
                 }
-            }
+            }*/
         });
 
         btnResetArena.setOnClickListener(v->{
@@ -523,10 +524,10 @@ public class HomeFragment extends Fragment{
                 String mode = intent.getStringExtra("msg");
                 switch (mode.toUpperCase()){
                     case "PATH":
-                        manualModeSwitch.setChecked(false);
+                        //manualModeSwitch.setChecked(false);
                         break;
                     case "MANUAL":
-                        manualModeSwitch.setChecked(true);
+                        //manualModeSwitch.setChecked(true);
                         break;
                 }
             }catch (Exception ex){
