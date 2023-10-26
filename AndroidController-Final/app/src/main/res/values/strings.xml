@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AndroidController</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Map -->
+    <string name="manual">MANUAL</string>
+    <string name="auto">AUTO</string>
+
+    <string name="update_xy_coordinate">X:%1$i  Y:%1$i  </string>
+<!--    <string name="update_y_coordinate">Y:%i </string>-->
+
+    <string name="configure">Reconfigure</string>
+</resources>

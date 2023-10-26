@@ -9,6 +9,7 @@ import random
 import string
 import numpy as np
 import random
+from ultralytics import YOLO
 
 def get_random_string(length):
     """
@@ -31,7 +32,8 @@ def load_model():
     Load the model from the local directory
     """
     #model = torch.hub.load('./', 'custom', path='YOLOv5_new.pt', source='local')
-    model = torch.hub.load('./', 'custom', path='Week_8.pt', source='local')
+    model = torch.hub.load('./', 'custom', path='weights/Week_8.pt', source='local')
+    #model = YOLO('weights/week8_final.pt')
     return model
 
 def draw_own_bbox(img,x1,y1,x2,y2,label,color=(36,255,12),text_color=(0,0,0)):
@@ -125,9 +127,9 @@ def draw_own_bbox(img,x1,y1,x2,y2,label,color=(36,255,12),text_color=(0,0,0)):
     cv2.imwrite(f"own_results/annotated_image_{label}_{rand}.jpg", img)
    
     # Display the annotated image
-    cv2.imshow("Annotated Image", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow("Annotated Image", img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
 
 
@@ -165,6 +167,7 @@ def predict_image(image, model):
 
     # Label with largest bbox height will be last
     df_results = df_results.sort_values('bboxArea', ascending=False)
+    print(df_results)
 
     # Filter out Bullseye
     pred_list = df_results 
@@ -173,6 +176,20 @@ def predict_image(image, model):
     # Initialize prediction to NA
     pred = 'NA'
 
+    for _, row in pred_list.iterrows():
+        if row['name'] == 'Six':
+            five_six_overlap = False
+            for _, five_row in pred_list.iterrows():
+                if five_row['name'] == 'Five':
+                    six_row = pred_list[pred_list['name'] == 'Six'].iloc[0]
+                    # Check for overlap
+                    if five_row['xmax'] > six_row['xmin'] and five_row['xmin'] < six_row['xmax'] and five_row['ymax'] > six_row['ymin'] and five_row['ymin'] < six_row['ymax']:
+                        five_six_overlap = True
+                        break
+            if five_six_overlap:
+                pred_list = pred_list[pred_list['name'] != 'Five']
+
+    print(pred_list)
     # Ignore Bullseye unless they are the only image detected and select the last label in the list (the last label will be the one with the largest bbox height)
     if len(pred_list) == 1:
         if pred_list.iloc[0]['name'] != 'Bullseye':
@@ -183,7 +200,8 @@ def predict_image(image, model):
 
         # More than 1 Symbol detected, filter by confidence and area
         pred_shortlist = []
-        current_area = pred_list.iloc[0]['bboxArea']
+        current_area = pred_list.iloc[0]['bboxArea']           
+
         # For each prediction, check if the confidence is greater than 0.5 and if the area is greater than 80% of the current area or 60% if the prediction is 'One'
         for _, row in pred_list.iterrows():
             if row['name'] != 'Bullseye' and row['confidence'] > 0.5 and ((current_area * 0.8 <= row['bboxArea']) or (row['name'] == 'One' and current_area * 0.6 <= row['bboxArea'])):
@@ -232,51 +250,51 @@ def predict_image(image, model):
         draw_own_bbox(np.array(img), pred['xmin'], pred['ymin'], pred['xmax'], pred['ymax'], pred['name'])
 
 
-#     name_to_id = {
-#         "NA": 'NA',
-#         "Bullseye": 10,
-#         "One": 11,
-#         "Two": 12,
-#         "Three": 13,
-#         "Four": 14,
-#         "Five": 15,
-#         "Six": 16,
-#         "Seven": 17,
-#         "Eight": 18,
-#         "Nine": 19,
-#         "A": 20,
-#         "B": 21,
-#         "C": 22,
-#         "D": 23,
-#         "E": 24,
-#         "F": 25,
-#         "G": 26,
-#         "H": 27,
-#         "S": 28,
-#         "T": 29,
-#         "U": 30,
-#         "V": 31,
-#         "W": 32,
-#         "X": 33,
-#         "Y": 34,
-#         "Z": 35,
-#         "Up": 36,
-#         "Down": 37,
-#         "Right": 38,
-#         "Left": 39,
-#         "Up Arrow": 36,
-#         "Down Arrow": 37,
-#         "Right Arrow": 38,
-#         "Left Arrow": 39,
-#         "Stop": 40
-#     }
-#     # If pred is not a string, i.e. a prediction was made and pred is not 'NA'
-#     if not isinstance(pred,str):
-#         image_id = str(name_to_id[pred['name']])
-#     else:
-#         image_id = 'NA'
-#     print(f"Final result: {image_id}")
-#     return image_id
+    name_to_id = {
+        "NA": 'NA',
+        "Bullseye": 10,
+        "One": 11,
+        "Two": 12,
+        "Three": 13,
+        "Four": 14,
+        "Five": 15,
+        "Six": 16,
+        "Seven": 17,
+        "Eight": 18,
+        "Nine": 19,
+        "A": 20,
+        "B": 21,
+        "C": 22,
+        "D": 23,
+        "E": 24,
+        "F": 25,
+        "G": 26,
+        "H": 27,
+        "S": 28,
+        "T": 29,
+        "U": 30,
+        "V": 31,
+        "W": 32,
+        "X": 33,
+        "Y": 34,
+        "Z": 35,
+        "Up": 36,
+        "Down": 37,
+        "Right": 38,
+        "Left": 39,
+        "Up Arrow": 36,
+        "Down Arrow": 37,
+        "Right Arrow": 38,
+        "Left Arrow": 39,
+        "Stop": 40
+    }
+    # If pred is not a string, i.e. a prediction was made and pred is not 'NA'
+    if not isinstance(pred,str):
+        image_id = str(name_to_id[pred['name']])
+    else:
+        image_id = 'NA'
+    print(f"Final result: {image_id}")
+    return image_id
 # # If some error happened, we just return 'NA' so that the inference loop is closed
 # except:
 #     print(f"Final result: NA")
@@ -328,10 +346,27 @@ def predict_image_week_9(image, model):
     #     image_id = 'NA'
     # return image_id
 
+
 if __name__ == '__main__':
     model = load_model()
     # set path to folder with images
-    test_image = "1665419523_2_C.jpg"
+    test_image = "1665419523_3_C.jpg"
     
-    #Task A2
+    #Task A2s
     predict_image(test_image, model)
+
+# if __name__ == '__main__':
+#     model = load_model()
+#     # set path to folder with images
+#     folder_path = 'W8Testimg/uploads'
+#     file_extension = '.jpg'  # Specify the file extension of the images
+#     # List all files in the folder
+#     files = os.listdir(folder_path)
+#     # Filter only the image files based on the file extension
+#     image_files = [file for file in files if file.endswith(file_extension)]
+    
+#     for image in image_files:
+#         #Task A2
+#         image_path = os.path.join(folder_path, image)
+#         print("Image path:", os.path.abspath(image_path))
+#         predict_image(image_path, model)

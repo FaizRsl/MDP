@@ -1,71 +1,75 @@
-import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model import *
-import socket
-import json
+# import importlib.util
+# import sys
 
 app = Flask(__name__)
 CORS(app)
+
 model = load_model()
-#model = None
-@app.route('/status', methods=['GET'])
-def status():
-    """
-    This is a health check endpoint to check if the server is running
-    :return: a json object with a key "result" and value "ok"
-    """
+print("Week 9 model has been loaded!")
+# model = None
+
+UPLOAD_FOLDER = 'uploads'
+
+@app.route('/status', methods = ['GET'])
+def get_status():
+    # check if the server is running
     return jsonify({"result": "ok"})
 
 @app.route('/image', methods=['POST'])
-def image_predict():
-    """
-    This is the main endpoint for the image prediction algorithm
-    :return: a json object with a key "result" and value a dictionary with keys "obstacle_id" and "image_id"
-    """
+def image_rec():
+    '''
+     Filename format: "<timestamp>_<obstacle_id>_<signal>.jpg"
+    '''
     file = request.files['file']
     filename = file.filename
+
+    # Split the string by underscore
+    parts = filename.split("_")
+
+    # Extract the values
+    obstacle_id = parts[1]  # <obstacle_id>
+    signal = parts[2].split(".")[0]  # <signal>
+
+    #filename = parts[0] + '.jpg' # only leave the timestamp for filename
+
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
     file.save(os.path.join('uploads', filename))
-    # filename format: "<timestamp>_<obstacle_id>_<signal>.jpeg"
-    constituents = file.filename.split("_")
-    obstacle_id = constituents[1]
 
-    ## Week 8 ## 
-    signal = constituents[2].strip(".jpg")
-    print("Starting image prediction...")
-    image_id = predict_image(filename, model, signal)
-    print("Image prediction completed!")
-
-    ## Week 9 ## 
-    # We don't need to pass in the signal anymore
-    #image_id = predict_image_week_9(filename,model)
-
-    # Return the obstacle_id and image_id
-    print("Sending JSON data...")
+    # TODO: rec_image function in model.py
+    
+    # #week 8
+    #rec_result = rec_image(filename, model, signal)
+    
+    #week 9
+    rec_result = rec_image_week9(filename, model, signal)
 
     result = {
-        "obstacle_id": obstacle_id,
-        "image_id": image_id
+        "image_id": str(rec_result['image_id']),
+        "obstacle_id": str(obstacle_id)
     }
-    
-    print(result)
 
     return jsonify(result)
 
 @app.route('/stitch', methods=['GET'])
-def stitch():
-    """
-    This is the main endpoint for the stitching command. Stitches the images using two different functions, in effect creating two stitches, just for redundancy purposes
-    """
-    img = stitch_image()
-    img.show()
-    img2 = stitch_image_own()
-    img2.show()
+def combine():
+    combine_image()
+    #image = combine_image()
+    #image.show()
     return jsonify({"result": "ok"})
 
+# @app.route('/path', methods=['POST'])
+# async def cal_path():
+#     spec = importlib.util.spec_from_file_location("module.name", "/Users/jiaxi/Desktop/MDP/github/CZ3004-SC2079-MDP/pygame/main.py ")
+#     foo = importlib.util.module_from_spec(spec)
+#     sys.modules["module.name"] = foo
+#     spec.loader.exec_module(foo)
+#     await foo.main()
+#     return 'NA'
+
 if __name__ == '__main__':
-    # print("Connecting to RPI")
-    # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # client_socket.connect(('192.168.12.12', 12345))
-    # print("Connection to RPI completed")
     app.run(host='0.0.0.0', port=5000, debug=True)
