@@ -249,16 +249,16 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of showTask */
-  // showTaskHandle = osThreadNew(show, NULL, &showTask_attributes);
+  showTaskHandle = osThreadNew(show, NULL, &showTask_attributes);
 
   /* creation of MotorTask */
-  // MotorTaskHandle = osThreadNew(move, NULL, &MotorTask_attributes);
+  MotorTaskHandle = osThreadNew(move, NULL, &MotorTask_attributes);
 
   /* creation of EncoderTask */
-  // EncoderTaskHandle = osThreadNew(encoder, NULL, &EncoderTask_attributes);
+  EncoderTaskHandle = osThreadNew(encoder, NULL, &EncoderTask_attributes);
 
   /* creation of servoTask */
-  // servoTaskHandle = osThreadNew(servo, NULL, &servoTask_attributes);
+  servoTaskHandle = osThreadNew(servo, NULL, &servoTask_attributes);
 
   /* creation of gyroTask */
   gyroTaskHandle = osThreadNew(gyroscope, NULL, &gyroTask_attributes);
