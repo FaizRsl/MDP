@@ -10,10 +10,10 @@ def load_model():
     # model = torch.hub.load('./', 'custom', path='../weights/Week8_senior.pt', source='local')
     
     # week 8
-    #model = YOLO('weights/week8_final.pt')
+    model = YOLO('weights/week8_final.pt')
     
     #week 9
-    model = YOLO('weights/week9_2.04.pt')
+    #model = YOLO('weights/week9_2.04.pt')
     
     return model
 
@@ -80,12 +80,13 @@ def rec_image(image, model, signal):
     
     # load image
     img = Image.open(os.path.join('uploads', image))
+    #img = Image.open(image)
     results = model.predict(img)
     result = results[0]
 
     rec_result = []
 
-    print(result.boxes)
+    #print(result.boxes)
 
     if len(result.boxes) == 0:
         return {
@@ -250,7 +251,7 @@ def combine_image():
 # if __name__ == '__main__':
 #     model = load_model()
 #     # set path to folder with images
-#     folder_path = 'W8Testimg/uploads'
+#     folder_path = 'uploads'
 #     file_extension = '.jpg'  # Specify the file extension of the images
 #     # List all files in the folder
 #     files = os.listdir(folder_path)
@@ -269,9 +270,9 @@ def combine_image():
 # if __name__ == '__main__':
 #     model = load_model()
 #     # set path to folder with images
-#     test_image = "1697041282_4_C.jpg"
+#     test_image = "1665419523_13_C.jpg"
 #     constituents = test_image.split("_")
 #     obstacle_id = constituents[1]
 #     signal = constituents[2].strip(".jpg")
 #     rec_image(test_image, model, signal)
-    # combine_image()
+#     #combine_image()
